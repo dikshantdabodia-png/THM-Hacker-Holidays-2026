@@ -10,7 +10,7 @@ The goal of this room is to analyze a provided brochure image for embedded clues
 
 ## 🔍 Image Analysis & Reconnaissance
 *   **Initial Check:** I started by downloading the task image and running it through `exiftool` to check for any hidden metadata (like GPS coordinates or embedded creator tags).
-    ![exiftool thebrochure.png] (images/exiftoolthebrochure)
+    ![exiftool thebrochure.png](images/exiftoolthebrochure.png)
     
 *   **Result:** The metadata was clean and did not reveal anything useful. 
 *   **The Pivot:** A hint provided by `@0xMia` suggested that the image looked "suspiciously perfect," heavily implying AI generation and prompting further external investigation. Following the clues pointing toward Instagram, I decided to run the image through Google Image Search to see where it originated.
@@ -19,14 +19,14 @@ The goal of this room is to analyze a provided brochure image for embedded clues
 *   **Locating the Resort:** The Google Image Search successfully linked the AI-generated brochure image to an Instagram account named **`thebytelotusresort`**.
 *   **Following the Breadcrumbs:** I navigated to the resort's Instagram page. To find the hidden connection mentioned in the briefing, I checked the accounts they were interacting with. I looked at their "Following" list and noticed they were only following **one** account.
 *   **Finding the Target:** That single followed account belonged to **`veratheconcierge`**.
-*   ![thebytelotusresort Instagram] (images/thebytelotusresort)
-*   ![veratheconcierge Instagram] (images/VeraInstagram)
+*   ![thebytelotusresort Instagram](images/thebytelotusresort.jpg)
+*   ![veratheconcierge Instagram](images/VeraInstagram.jpg)
 
 ## 🔓 Decoding & Exploitation
 *   **Analyzing the Content:** I checked Vera's account and found 3 posts. Instead of normal captions, the posts contained random strings of text.
 *   **Identifying the Cipher:** The alphanumeric format of the strings and the presence of equal signs (`=`) at the end heavily indicated that the text was encoded using Base64.
 *   **Decoding:** I copied the encoded strings and pasted them into **CyberChef**. Using the "From Base64" recipe, I decoded the text, which revealed the final flag.
-*   ![CyberChef Decoding Base64] (images/CyberChefVera)
+*   ![CyberChef Decoding Base64](images/CyberChefVera.png)
 
 ## 🚩 Flag
 *   **Flag:** `THM{REDACTED}`
