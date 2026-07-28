@@ -15,7 +15,7 @@ The goal of this room is to analyze a provided brochure image for embedded clues
 * **Initial Check:** I started by downloading the task image and running it through `exiftool` to check for any hidden metadata (like GPS coordinates or embedded creator tags).
 
 <p align="center">
-  <img src="YOUR_EXIFTOOL_IMAGE_URL" width="650" alt="exiftool thebrochure.png">
+  <img src="images/exiftoolthebrochure.png" width="650" alt="exiftool thebrochure.png">
 </p>
 
 * **Result:** The metadata was clean and did not reveal anything useful.
@@ -32,11 +32,11 @@ The goal of this room is to analyze a provided brochure image for embedded clues
 <table align="center">
   <tr>
     <td align="center">
-      <img src="YOUR_BYTE_LOTUS_IMAGE_URL" width="380" alt="thebytelotusresort Instagram"><br>
+      <img src="images/thebytelotusresort.jpg" width="380" alt="thebytelotusresort Instagram"><br>
       <sub><b>thebytelotusresort Instagram</b></sub>
     </td>
     <td align="center">
-      <img src="YOUR_VERA_IMAGE_URL" width="380" alt="veratheconcierge Instagram"><br>
+      <img src="images/VeraInstagram.jpg" width="380" alt="veratheconcierge Instagram"><br>
       <sub><b>veratheconcierge Instagram</b></sub>
     </td>
   </tr>
@@ -51,7 +51,7 @@ The goal of this room is to analyze a provided brochure image for embedded clues
 * **Decoding:** I copied the encoded strings and pasted them into *CyberChef*. Using the "From Base64" recipe, I decoded the text, which revealed the final flag.
 
 <p align="center">
-  <img src="YOUR_CYBERCHEF_IMAGE_URL" width="700" alt="CyberChef Decoding Base64">
+  <img src="images/CyberChefVera.png" width="700" alt="CyberChef Decoding Base64">
 </p>
 
 ---
