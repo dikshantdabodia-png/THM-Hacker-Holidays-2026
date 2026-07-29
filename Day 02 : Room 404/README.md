@@ -1,29 +1,26 @@
 # Day 2: Room 404 - TryHackMe Hacker Holidays Write-up
 
-**Difficulty:** Very Easy
-**Category:** Web
-**Points:** 30
-**Tools Used:** Gobuster, wget, git-dumper
+*Difficulty:* Very Easy  | *Category:* Web  | *Tools Used:* Gobuster, wget, git-dumper
+
+---
 
 ## 📝 Objective
 The concierge briefing hints at a room not on the floor plan and an open port 8080. It mentions that a night-shift developer for the Byte Lotus guest-experience platform rushed the deployment and "shipped more than the website." The goal is to enumerate the web server and find what was left behind.
 
+---
+
 ## 🔍 Reconnaissance & Enumeration
 *   **Initial Web Check:** I opened the target IP on port 8080 in my browser (`http://<Machine_IP>:8080`). It displayed a general homepage, but checking the source and clicking around revealed nothing useful; all links were just dead placeholders (`#`).
-
-![Initial website view and source code inspection](images/website-inspect.png)
-
 *   **Directory Brute-forcing:** Knowing I needed to find hidden directories, I ran Gobuster against the URL using a standard wordlist (`common.txt`).
     ```bash
     gobuster dir -u http://<Machine_IP>:8080/ -w /usr/share/wordlists/dirb/common.txt
     ```
 *   **Findings:** Gobuster quickly found a hit: `/.git/HEAD` and the `/.git/` directory, confirming that the developer accidentally deployed the version control repository to the public web server.
 
+---
+
 ## 🚪 Exploitation / Git Dumping
 *   **Manual Inspection:** I navigated to `http://<Machine_IP>:8080/.git/HEAD`. It prompted a file download, but it wasn't immediately readable. I then navigated to `http://<Machine_IP>:8080/.git/` in the browser. It showed an open directory listing containing an `objects/` folder full of hashes instead of standard encoded text.
-
-![Exposed /.git/ directory listing in the browser](images/git-directory.png)
-
 *   **Downloading the Repository:** Since this was a publicly exposed Git repository, I needed to dump its contents to reconstruct the source code. I initially used `wget` to recursively download the directory:
     ```bash
     wget -r -np -R "index.html" http://<Machine_IP>:8080/.git/
@@ -38,10 +35,33 @@ The concierge briefing hints at a room not on the floor plan and an open port 80
     cat README.txt
     ```
 
-![Terminal view running cat on README.txt to show the flag](images/terminal-flag.jpeg)
+---
+
+## 📸 Exploitation Walkthrough
+
+<table align="center">
+  <tr>
+    <td align="center" width="33%">
+      <img src="images/website-inspect.png" width="100%" alt="Initial website view and source code inspection"><br>
+      <sub><b>1. Website & Source Inspection</b></sub>
+    </td>
+    <td align="center" width="33%">
+      <img src="images/git-directory.png" width="100%" alt="Exposed /.git/ directory listing in the browser"><br>
+      <sub><b>2. Exposed /.git/ Directory</b></sub>
+    </td>
+    <td align="center" width="33%">
+      <img src="images/terminal-flag.jpeg" width="100%" alt="Terminal view running cat on README.txt to show the flag"><br>
+      <sub><b>3. Repository Dump & Flag</b></sub>
+    </td>
+  </tr>
+</table>
+
+---
 
 ## 🚩 Flag
 *   **Flag:** `THM{REDACTED}`
+
+---
 
 ## 💡 Key Takeaways
 *   **Source Code Exposure:** Deploying `.git` folders to a production web server is a massive security risk. It allows attackers to use tools like `git-dumper` to download the entire source code, commit history, and potentially sensitive information like hardcoded credentials or hidden developer notes.
