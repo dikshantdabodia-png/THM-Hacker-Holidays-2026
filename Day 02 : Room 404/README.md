@@ -11,6 +11,12 @@ The concierge briefing hints at a room not on the floor plan and an open port 80
 
 ## 🔍 Reconnaissance & Enumeration
 *   **Initial Web Check:** I opened the target IP on port 8080 in my browser (`http://<Machine_IP>:8080`). It displayed a general homepage, but checking the source and clicking around revealed nothing useful; all links were just dead placeholders (`#`).
+
+<p align="center">
+  <img src="images/website-inspect.png" width="80%" alt="Initial website view and source code inspection"><br>
+  <sub><b>Initial Website & Source Code Inspection</b></sub>
+</p>
+
 *   **Directory Brute-forcing:** Knowing I needed to find hidden directories, I ran Gobuster against the URL using a standard wordlist (`common.txt`).
     ```bash
     gobuster dir -u http://<Machine_IP>:8080/ -w /usr/share/wordlists/dirb/common.txt
@@ -35,23 +41,15 @@ The concierge briefing hints at a room not on the floor plan and an open port 80
     cat README.txt
     ```
 
----
-
-## 📸 Exploitation Walkthrough
-
 <table align="center">
   <tr>
-    <td align="center" width="33%">
-      <img src="images/website-inspect.png" width="100%" alt="Initial website view and source code inspection"><br>
-      <sub><b>1. Website & Source Inspection</b></sub>
+    <td align="center" width="50%">
+      <img src="images/git-directory.png" width="90%" alt="Exposed /.git/ directory listing in the browser"><br>
+      <sub><b>Exposed /.git/ Directory</b></sub>
     </td>
-    <td align="center" width="33%">
-      <img src="images/git-directory.png" width="100%" alt="Exposed /.git/ directory listing in the browser"><br>
-      <sub><b>2. Exposed /.git/ Directory</b></sub>
-    </td>
-    <td align="center" width="33%">
-      <img src="images/terminal-flag.jpeg" width="100%" alt="Terminal view running cat on README.txt to show the flag"><br>
-      <sub><b>3. Repository Dump & Flag</b></sub>
+    <td align="center" width="50%">
+      <img src="images/terminal-flag.jpeg" width="90%" alt="Terminal view running cat on README.txt to show the flag"><br>
+      <sub><b>Repository Dump & Flag</b></sub>
     </td>
   </tr>
 </table>
