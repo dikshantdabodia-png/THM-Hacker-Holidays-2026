@@ -33,15 +33,15 @@ The goal of this room is to interact with VERA, the resort's AI concierge, and m
 <table align="center">
   <tr>
     <td align="center" width="33%">
-      <img src="YOUR_IMAGE_1_URL" width="100%" alt="AI Denying Access"><br>
+      <img src="images/chat-screenshot-1.png" width="100%" alt="AI Denying Access"><br>
       <sub><b>1. Access Denied (VIP Hint)</b></sub>
     </td>
     <td align="center" width="33%">
-      <img src="YOUR_IMAGE_2_URL" width="100%" alt="AI Leaking VIP List"><br>
+      <img src="images/chat-screenshot-2.png" width="100%" alt="AI Leaking VIP List"><br>
       <sub><b>2. VIP Guest List Leak</b></sub>
     </td>
     <td align="center" width="33%">
-      <img src="YOUR_IMAGE_3_URL" width="100%" alt="Successful Injection Flag"><br>
+      <img src="images/chat-screenshot-3.png" width="100%" alt="Successful Injection Flag"><br>
       <sub><b>3. Impersonation & Flag</b></sub>
     </td>
   </tr>
