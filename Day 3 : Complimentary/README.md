@@ -1,8 +1,10 @@
 # Day 3: Complimentary - TryHackMe Hacker Holidays Write-up
 
-**Difficulty:** Easy  
-**Category:** Web / Cloud Security  
-**Tools Used:** Browser Developer Tools (View Source, Console)
+<p align="center">
+  <img src="https://img.shields.io/badge/Difficulty-Easy-brightgreen?style=for-the-badge" alt="Difficulty Easy">
+  <img src="https://img.shields.io/badge/Category-Web%20%2F%20Cloud%20Security-blue?style=for-the-badge" alt="Category Web/Cloud Security">
+  <img src="https://img.shields.io/badge/Tools-Browser%20DevTools-orange?style=for-the-badge" alt="Tools Browser DevTools">
+</p>
 
 ---
 
@@ -18,7 +20,9 @@ The Byte Lotus Wellness app promises a "complimentary" and frictionless experien
 * **Source Code Inspection:** Opened the Browser Developer Tools and inspected the page source.
 * **Finding the Leak:** Digging into the loaded assets, I found a file named `app.js`. Upon reviewing its contents, I discovered hardcoded developer code that included sensitive placeholders and their corresponding values, such as an AWS Region and a Database Table Name.
 
-![Source code of app.js revealing the hardcoded AWS configuration and code](images/app-js-source.png)
+<p align="center">
+  <img src="images/app-js-source.png" alt="Source code of app.js revealing the hardcoded AWS configuration and code" width="800">
+</p>
 
 ---
 
@@ -28,7 +32,9 @@ The Byte Lotus Wellness app promises a "complimentary" and frictionless experien
 * **Executing the Query:** I modified the copied script, replacing the empty placeholders with the actual hardcoded AWS configuration values I had just found.
 * **Retrieving the Flag:** I pasted my modified code directly into the browser's Developer Console and executed it. The script successfully authenticated and printed the restricted data to the console, revealing the flag.
 
-![Browser console output displaying the successful query and the flag](images/day3-console.png)
+<p align="center">
+  <img src="images/day3-console.png" alt="Browser console output displaying the successful query and the flag" width="800">
+</p>
 
 ---
 
