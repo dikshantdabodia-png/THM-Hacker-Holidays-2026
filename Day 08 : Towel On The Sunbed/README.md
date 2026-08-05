@@ -35,31 +35,23 @@ Since using the initial account would complicate testing due to the active 24-ho
   <img src="images/initial_request.png" alt="Initial burp suite repeater request and response" width="800">
 </p>
 
-### Step 2: Grouping and Duplicating Requests
+### Step 2: Grouping, Duplicating & Parallel Execution
 1. Added the claim request to a new **Repeater Group**.
 2. Duplicated the request within the group to prepare a batch of parallel actions.
+3. Configured the Repeater group execution mode to **Send requests in parallel (single connection)**.
+4. Fired the entire batch of requests simultaneously to trigger a race condition on the server.
 
 <p align="center">
-  <img src="images/burp_group.png" alt="Added to group" width="800">
-</p>
-
-<p align="center">
-  <img src="images/duplicate_requests.png" alt="Duplicate requests" width="800">
-</p>
-
-### Step 3: Executing in Parallel
-1. Configured the Repeater group execution mode to **Send requests in parallel (single connection)**.
-2. Fired the entire batch of requests simultaneously to trigger a race condition on the server.
-
-<p align="center">
-  <img src="images/send_parallel.png" alt="Send in parallel" width="800">
+  <img src="images/burp_group.png" alt="Added to group" width="31%" style="display:inline-block; margin-right: 1%;">
+  <img src="images/duplicate_requests.png" alt="Duplicate requests" width="31%" style="display:inline-block; margin-right: 1%;">
+  <img src="images/send_parallel.png" alt="Send in parallel" width="31%" style="display:inline-block;">
 </p>
 
 <p align="center">
   <img src="images/request_response_batch.png" alt="Request and response of duplicated requests" width="800">
 </p>
 
-### Step 4: Session Manipulation & Flag Retrieval
+### Step 3: Session Manipulation & Flag Retrieval
 1. The server processed the parallel batch before updating the lock state, successfully granting multiple rewards.
 2. I copied the updated session cookie from the successful parallel response.
 3. Opened the browser's developer tools (**F12 > Application > Cookies**), updated my active session cookie value, and refreshed the page.
