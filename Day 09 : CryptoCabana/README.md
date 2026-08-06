@@ -97,6 +97,10 @@ Retrieving `key-shard-1` and `key-shard-3` revealed two parts of the flag, while
   <img src="images/day9-keyvault.png" alt="Listing Azure Key Vault secrets and retrieving key shards" width="800">
 </p>
 
+<p align="center">
+  <img src="images/day9-account-show.png" alt="Listing the name and type using az account show" width="800">
+</p>
+
 Since Azure Key Vault stores previous secret versions, I listed the available versions of `key-shard-2` and retrieved the older one using its specific ID.
 
 ```bash
